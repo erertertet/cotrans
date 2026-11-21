@@ -9,7 +9,8 @@ import esbuild from 'rollup-plugin-esbuild'
 import icons from 'unplugin-icons/rollup'
 import yaml from '@rollup/plugin-yaml'
 import { babel } from '@rollup/plugin-babel'
-import info from './package.json' assert { type: 'json' }
+
+const info = JSON.parse(fs.readFileSync(new URL('./package.json', import.meta.url), 'utf8'))
 
 function fileExists(filePath) {
   try {
