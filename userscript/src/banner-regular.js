@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name              Cotrans Manga/Image Translator (Regular Edition)
-// @name:zh-CN        Cotrans 漫画/图片翻译器 (常规版)
-// @namespace         https://cotrans.touhou.ai/userscript/#regular
-// @version           {{version}}
-// @description       (WIP) Translate texts in images on Pixiv, Twitter, Misskey, Calckey
+// @name              Cotrans Manga/Image Translator (Rawkuma Fork)
+// @name:zh-CN        Cotrans 漫画/图片翻译器 (Rawkuma 版)
+// @namespace         https://cotrans.touhou.ai/userscript/#rawkuma-fork
+// @version           0.8.4
+// @description       Translate chapter images on Rawkuma and images on Pixiv, Twitter, Misskey, and Calckey
 // @description:zh-CN (WIP) 一键翻译图片内文字，支持 Pixiv, Twitter, Misskey, Calckey
 // @author            QiroNT
 // @license           GPL-3.0
@@ -18,6 +18,7 @@
 // @match https://misskey.io/*
 // @include https://calckey.social/*
 // @match https://calckey.social/*
+// @match https://rawkuma.net/manga/*
 // @include https://*
 // @match https://*
 // @connect pixiv.net
@@ -34,6 +35,10 @@
 // @connect api.cotrans.touhou.ai
 // @connect r2.cotrans.touhou.ai
 // @connect cotrans-r2.moe.ci
+// @connect cdn.rawkuma.com
+// @connect cdn.rawkuma.net
+// @connect 127.0.0.1
+// @connect localhost
 // @connect *
 // @grant GM.xmlHttpRequest
 // @grant GM_xmlhttpRequest
@@ -47,12 +52,14 @@
 // @grant GM_addValueChangeListener
 // @grant GM.removeValueChangeListener
 // @grant GM_removeValueChangeListener
+// @grant GM.registerMenuCommand
+// @grant GM_registerMenuCommand
 // @grant window.onurlchange
 // @run-at document-idle
 // ==/UserScript==
 
 /* eslint-disable no-undef, unused-imports/no-unused-vars */
-const VERSION = '{{version}}'
+const VERSION = '0.8.4'
 const EDITION = 'regular'
 let GMP
 {
