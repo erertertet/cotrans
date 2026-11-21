@@ -64,24 +64,36 @@ let GMP
     deleteValue: typeof GM_deleteValue !== 'undefined' ? GM_deleteValue : undefined,
     addValueChangeListener: typeof GM_addValueChangeListener !== 'undefined' ? GM_addValueChangeListener : undefined,
     removeValueChangeListener: typeof GM_removeValueChangeListener !== 'undefined' ? GM_removeValueChangeListener : undefined,
+    registerMenuCommand: typeof GM_registerMenuCommand !== 'undefined' ? GM_registerMenuCommand : undefined,
   }
-  const xmlHttpRequest = GM.xmlHttpRequest.bind(GM) || GMPFunctionMap.xmlHttpRequest
-  GMP = new Proxy(GM, {
+  const modernGM = typeof GM !== 'undefined' ? GM : {}
+  const xmlHttpRequest = modernGM.xmlHttpRequest?.bind(modernGM) || GMPFunctionMap.xmlHttpRequest
+  GMP = new Proxy(modernGM, {
     get(target, prop) {
       if (prop === 'xmlHttpRequest') {
         return (context) => {
           return new Promise((resolve, reject) => {
-            xmlHttpRequest({
+            const request = xmlHttpRequest({
               ...context,
               onload(event) {
-                context.onload?.()
+                context.onload?.(event)
                 resolve(event)
               },
               onerror(event) {
-                context.onerror?.()
+                context.onerror?.(event)
                 reject(event)
               },
+              ontimeout() {
+                context.ontimeout?.()
+                reject(new Error('The request timed out.'))
+              },
+              onabort() {
+                context.onabort?.()
+                reject(new Error('The request was cancelled.'))
+              },
             })
+            if (typeof request?.then === 'function')
+              request.then(resolve, reject)
           })
         }
       }
